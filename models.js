@@ -74,7 +74,8 @@ function grid(width, height){
     
     playerPoint = new Point(-1,-1);
     playerIn = false;
-        
+    moveCooldown = 0.0;
+    
     this.gridArray = [];
     for (i = 0; i < height; i++){
 	this.gridArray.push( [] );
@@ -97,9 +98,9 @@ function grid(width, height){
 	playerPoint.y = y;
     }
 
-    this.update = function(){
-	for (i = 0; i < width; i++){
-	    for (j = 0; j < height; j++){
+    this.update = function() {
+	for (i = 0; i < width; i++) {
+	    for (j = 0; j < height; j++) {
 		this.gridArray[i][j].updateState();
 		this.gridArray[i][j].update();
 		
@@ -107,16 +108,44 @@ function grid(width, height){
 	}
     }
 
-    this.randomPopulate = function(n){
-	for (i = 0; i < n; i++){
+    this.randomPopulate = function(n) {
+	for (i = 0; i < n; i++) {
 	    x = Math.round(Math.random() * width) % width;
 	    y = Math.round(Math.random() * height) % height;
 	    this.gridArray[x][y].state = STATE_LIFE;
 	}
     }
+
+    this.move = function(dx,dy) {
+	if (moveCooldown <= 0.0) {
+	    this.gridArray[playerPoint.x][playerPoint.y].state = STATE_EMPTY;	
+	    playerPoint.x = playerPoint.x + dx;
+	    playerPoint.y = playerPoint.y + dy;
+	    this.gridArray[playerPoint.x][playerPoint.y].state = STATE_PLAYER;
+
+	    moveCooldown = 1.0;
+	} else {
+	    moveCooldown -= 0.1;
+	}
+    }
+
+    this.moveUp = function() {
+	if (playerPoint.y > 0) this.move(0,-1);
+    };
+
+    this.moveDown = function() {
+	if (playerPoint.y < height-1) this.move(0,1);
+    };
+
+    this.moveLeft = function() {
+	if (playerPoint.x > 0) this.move(-1,0);
+    };
+
+    this.moveRight = function() {
+	if (playerPoint.x < width-1) this.move(1,0);
+    };
     
 }
-
 
 function player(width, height, color, x, y) {
     component.call(this, width, height, color, x, y);
