@@ -6,7 +6,7 @@ function startGame() {
     GameArea.start();
     GamePiece = new player(30, 30, "red", 10, 120);
     Grid = new grid(20,20);
-    Grid.randomPopulate(100);
+    Grid.randomPopulate(200);
     Grid.playerEnter(1,1);
     Grid.playerIn = true;
 }
@@ -36,11 +36,11 @@ function updateGameArea() {
 var GameArea =  {
     canvas : document.createElement("canvas"),
     start : function() {
-        this.canvas.width = 1280;
+        this.canvas.width = 720;
         this.canvas.height = 720;
         this.context = this.canvas.getContext("2d");
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-	this.interval = setInterval(updateGameArea, 10);
+	this.interval = setInterval(updateGameArea, 60);
 	
 	window.addEventListener('keydown', function (e) {
             GameArea.key = e.keyCode;
