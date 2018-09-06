@@ -19,10 +19,16 @@ function component(width, height, color, x, y) {
     this.speedY = 0;
     this.color = color;
 
-    this.update = function(){	    
+    this.move = function() {
+	//Nothing
+    }; 
+    
+    this.update = function(){
+	this.move();
+	
 	ctx = GameArea.context;
 	ctx.fillStyle = this.color;
-	ctx.fillRect(this.x, this.y, this.width, this.height);
+	ctx.fillRect(this.x, this.y, this.width, this.height);	
     };
 }
 
@@ -166,16 +172,23 @@ function grid(width, height){
 			
 			var escaped = null;
 			console.log("Escaped! at: x:" + cx + " : " + cy ) ;
-			if (emptyPoint.x < 1) {	    
-			    escaped = new freetile(30, 30, "pink", cx - 100, cy);
-			} else if (emptyPoint.x == width - 1) {
-			    escaped = new freetile(30, 30, "pink", cx + 100, cy);
-			} else if (emptyPoint.y < 1) {
-			    escaped = new freetile(30, 30, "pink", cx, cy - 100);
-			} else if (emptyPoint.y == height -1) {
-			    escaped = new freetile(30, 30, "pink", cx, cy + 100);
+			escaped = new freetile(30, 30, "pink", cx, cy);
+			if (emptyPoint.x < width/2) {	    
+			    escaped.speedX = -10;			    
 			}
-			// setIntervalX(escaped.moveLeft(), 60, 10);
+
+			if (emptyPoint.x > width/2) {
+			    escaped.speedX = 10;
+			}
+
+			if (emptyPoint.y < height/2) {
+			    escaped.speedY = -10;
+			}
+
+			if (emptyPoint.y > height/2) {
+			    escaped.speedY = 10;
+			}
+
 			this.escapedList.push( escaped );
 			
 		    }  else {
