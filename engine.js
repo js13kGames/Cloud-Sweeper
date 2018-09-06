@@ -4,9 +4,10 @@
 
 function startGame() {
     GameArea.start();
-    GamePiece = new player(30, 30, "red", 10, 120);
+    GamePiece = new freetile(30, 30, "red", 10, 120);
     Grid = new grid(20,20);
     Grid.randomPopulate(200);
+    Grid.initBorder();
     Grid.playerEnter(1,1);
     Grid.playerIn = true;
 }
@@ -33,12 +34,27 @@ function updateGameArea() {
     
 }
 
+function setIntervalX(callback, delay, repetitions) {
+    var x = 0;
+    var intervalID = window.setInterval(function () {
+
+       callback();
+
+       if (++x === repetitions) {
+           window.clearInterval(intervalID);
+       }
+    }, delay);
+}
+
 var GameArea =  {
     canvas : document.createElement("canvas"),
     start : function() {
         this.canvas.width = 720;
         this.canvas.height = 720;
         this.context = this.canvas.getContext("2d");
+	this.context.fillStyle = "blue";
+	this.context.fill();
+	
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
 	this.interval = setInterval(updateGameArea, 60);
 	
