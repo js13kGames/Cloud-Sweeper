@@ -4,9 +4,9 @@
 
 function startGame() {
     GameArea.start();
-    GamePiece = new freetile(30, 30, "red", 10, 120);
-    Grid = new grid(20,20);
-    Grid.randomPopulate(200);
+    GamePiece = new freetile(BLOCK_SIZE, BLOCK_SIZE, "red", 10, 120);
+    Grid = new grid(GRID_LENGTH, GRID_LENGTH);
+    Grid.randomPopulate(GRID_LENGTH);
     Grid.initBorder();
     Grid.playerEnter(1,1);
     Grid.playerIn = true;
@@ -17,9 +17,8 @@ function updateGameArea() {
     GameArea.clear();   
     GamePiece.move();
     GamePiece.update();
-
-    Grid.update()
-
+    
+    Grid.update();
     if (!Grid.playerIn) {
 	if (GameArea.key && GameArea.key == 37) { GamePiece.moveLeft(); }
 	if (GameArea.key && GameArea.key == 39) { GamePiece.moveRight(); }
@@ -50,8 +49,8 @@ var GameArea =  {
     canvas : document.createElement("canvas"),
     start : function() {
         this.canvas.width = 720;
-        this.canvas.height = 720;
-        this.context = this.canvas.getContext("2d");
+        this.canvas.height = 720;	
+	this.context = this.canvas.getContext("2d");
 	this.context.fillStyle = "blue";
 	this.context.fill();
 	
@@ -69,6 +68,9 @@ var GameArea =  {
     
     clear : function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	this.context.fillStyle = "blue";
+	this.context.fill();
+	
     }
 }
 

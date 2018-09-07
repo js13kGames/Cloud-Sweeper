@@ -2,10 +2,14 @@
 * Objects 
 */
 
+BLOCK_SIZE=30;
+GRID_LENGTH=10;
+
 STATE_EMPTY=0;
 STATE_PLAYER=1;
 STATE_LIFE=2;
 STATE_EXIT=3;
+
 
 function component(width, height, color, x, y) {
     MAX_SPEED = 5;
@@ -133,6 +137,8 @@ function grid(width, height){
 
     this.getEmptyPoint = function(x,y) {
 	var point = new Point(-1,-1);
+	var listOfPoints = [];
+	
 	for ( var i = -1; i < 2; i++) {
 	    for ( var j = -1; j < 2; j++) {
 		if (!(i == 0 && j == 0)) {
@@ -141,15 +147,18 @@ function grid(width, height){
 		    if (dx < width && dx >= 0 &&
 			dy < height && dy >= 0) {			
 			if (this.gridArray[dx][dy].state == STATE_EMPTY ||
-			    this.gridArray[dx][dy].state == STATE_EXIT ){
-			    point = new Point(dx,dy);
-			    return point;
+			    this.gridArray[dx][dy].state == STATE_EXIT ){			    
+			    listOfPoints.push(new Point(dx,dy));
 			}
 		    }
 		}
 	    }
 	}
-	return point;
+	if (listOfPoints.length == 0){
+	    return point
+	}
+	
+	return listOfPoints[ Math.floor(Math.random() * listOfPoints.length)];
     }
     
     this.checkGrid = function(i,j) {
@@ -172,7 +181,7 @@ function grid(width, height){
 			
 			var escaped = null;
 			console.log("Escaped! at: x:" + cx + " : " + cy ) ;
-			escaped = new freetile(30, 30, "pink", cx, cy);
+			escaped = new freetile(BLOCK_SIZE, BLOCK_SIZE, "pink", cx, cy);
 			if (emptyPoint.x < width/2) {	    
 			    escaped.speedX = -10;			    
 			}
@@ -209,7 +218,19 @@ function grid(width, height){
 	    }
 	}
 	for (var i = 0; i < this.escapedList.length; i++){
-	    this.escapedList[i].update()
+	    if (this.escapedList[i].x < -100 ||
+		this.escapedList[i].x > 5000 ||
+		this.escapedList[i].y < 5000 ||
+		this.escapedList[i].y < -100){
+		
+		// Destroy out of bound objects
+		// this.escapedList.splice(i,1); // Remove from list
+		
+	    } else {
+		// Updated
+		
+	    }
+	    this.escapedList[i].update();
 	}
     }
 
@@ -253,9 +274,16 @@ function grid(width, height){
 		}
 	    }
 	  
-	    moveCooldown = 0.2;
+	    moveCooldown = 0.1;
 	} else {
 	    moveCooldown -= 0.1;
+	}
+
+	if ( (this.gridArray[playerPoint.x+1][playerPoint.y].state != STATE_EMPTY &&
+	      this.gridArray[playerPoint.x-1][playerPoint.y].state != STATE_EMPTY &&
+	      this.gridArray[playerPoint.x][playerPoint.y+1].state != STATE_EMPTY &&
+	      this.gridArray[playerPoint.x][playerPoint.y-1].state != STATE_EMPTY ) ) {
+	    alert("YOU LOSE. GO HOME.");
 	}
     }
 
@@ -281,8 +309,8 @@ function freetile(width, height, color, x, y) {
     component.call(this, width, height, color, x, y);
 
     this.move = function() {
-        this.x += this.speedX;
-        this.y += this.speedY; 
+        this.x += this.speedX + (Math.random(1) - Math.random(1)) * 20;
+	this.y += this.speedY + (Math.random(1) - Math.random(1)) * 20;
     };
 
     this.moveUp = function() {
