@@ -256,8 +256,12 @@ function grid(x, y, width, height){
 	for ( var i = 0; i < n; i++) {
 	    x = Math.round(Math.random() * width) % width;
 	    y = Math.round(Math.random() * height) % height;
+	  
 	    this.gridArray[x][y].state = STATE_LIFE;
 	}
+	this.gridArray[1][2].state = STATE_EMPTY;
+	this.gridArray[2][1].state = STATE_EMPTY;
+	this.gridArray[2][2].state = STATE_EMPTY;	
     }
 
     this.initBorder = function(){

@@ -19,7 +19,7 @@ function startGame() {
 		    GRID_LENGTH);
     Grid.randomPopulate(GRID_LENGTH*GRID_LENGTH/2);
     Grid.initBorder();
-    Grid.playerEnter(1,1);
+    Grid.playerEnter(1,1);;
     Grid.playerIn = true;
 
     document.getElementById("startButton").innerText = "Reset";
@@ -84,7 +84,7 @@ var GameArea =  {
     },
 
     updateScore : function() {
-	GAME_SCORE = GAME_FREED + GAME_CREATED - (GAME_DESTROYED * 2)
+	GAME_SCORE = GAME_FREED*2 + GAME_CREATED - (GAME_DESTROYED * 2)
 	document.getElementById("boxScore").innerText = GAME_SCORE;
 	document.getElementById("boxFreed").innerText = GAME_FREED;
 	document.getElementById("boxCreated").innerText = GAME_CREATED;
