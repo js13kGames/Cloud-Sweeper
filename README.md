@@ -2,4 +2,6 @@
 A JavaScript game. 
 
 ## Instructions
-Run index.html in your browser. Instructions are in-game.
+Try at: https://mbelmadani.github.io/cloud-sweeper/
+
+Or clone repository and run index.html in your browser. Instructions are in-game.
