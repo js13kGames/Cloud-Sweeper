@@ -9,11 +9,53 @@ canvas {
 }
 </style>
 </head>
-<body onload="startGame()">
+<body onload="">
   <script type="text/javascript" src="game.js">
   </script>
 
-<p>We have created a game area! (or at least an empty canvas)</p>
+  <div id="rules"  style="float:left;width:20%;" >
+    <h2>Cloud Sweeper</h2>
+    <div style="float:left;" >
+      <div>
+	<table style="width:100%;">
+	  <tr style="width:15%;">
+	    <th>Score</th>
+	    <th>Freed</th>
+	    <th>Copied</th>
+	    <th>Deleted</th>
+	  </tr>
+	  <tr>
+	    <td id="boxScore" >0</td>
+	    <td id="boxFreed">0</td>
+	    <td id="boxCreated">0</td>
+	    <td id="boxDestroyed">0</td>
+	  </tr>
+	</table>
+	
 
+      </div>
+      <div>
+	<p> Free up your cloud storage by moving your data <strong>offline</strong>! Copy units "off the grid" and free up some storage.</p>
+	<h3> Rules: </h3>
+	<ul>
+	  <li> Move with the arrow keys. </li>
+	  <li> Clouds that are copied to the border are moved offline. </li>
+	  <li> If a unit has 2 or 3 neighbours, it is copied to an empty neighbouring cell. </li>
+	  <li> If a unit has more than 3 neighbours, it is redundant and is deleted. </li>
+	  <li> If a unit has less than 2 neighbours, it is unreliable and is deleted. </li>
+	  <li> You lose if cornered by clouds or the border. </li>
+	  <li> Try to clear the grid with the highest score.</li>
+	  <li> Score = (Unit Freed) + (Units copied) - 2*(Units deleted)   </li>
+	</ul>
+	<p><em>Don't or "backup" into a corner. Minimize files deleted.</em></p>
+      </div>
+    </div>
+    <div style="float:left;">
+      <p> &nbsp; </p>
+    </div>
+    <div>
+      <button id="startButton" type="button" onclick="startGame()"> Start </button>
+    </div>
+  </div>
 </body>
 </html>

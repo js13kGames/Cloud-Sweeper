@@ -3,13 +3,19 @@
 */
 
 BLOCK_SIZE=30;
-GRID_LENGTH=10;
-
+BORDER_SIZE=1;
+GRID_LENGTH=20;
+CANVAS_SIZE=BLOCK_SIZE * GRID_LENGTH + (BLOCK_SIZE * GRID_LENGTH)*0.25 ; 
 STATE_EMPTY=0;
 STATE_PLAYER=1;
 STATE_LIFE=2;
 STATE_EXIT=3;
 
+GAME_COLOUR="blue";
+GAME_SCORE=0;
+GAME_FREED=0;
+GAME_CREATED=0;
+GAME_DESTROYED=0;
 
 function component(width, height, color, x, y) {
     MAX_SPEED = 5;
@@ -28,8 +34,7 @@ function component(width, height, color, x, y) {
     }; 
     
     this.update = function(){
-	this.move();
-	
+	this.move();	
 	ctx = GameArea.context;
 	ctx.fillStyle = this.color;
 	ctx.fillRect(this.x, this.y, this.width, this.height);	
@@ -57,7 +62,7 @@ function tile(width, height, color, x, y) {
 	    this.color = 'red';
             break;	
 	case STATE_LIFE:
-	    this.color = 'pink';
+	    this.color = 'white';
             break;
 	case STATE_EXIT:
 	    this.color = 'brown';
@@ -69,10 +74,12 @@ function tile(width, height, color, x, y) {
 
     this.die = function(){
 	this.state = STATE_EMPTY;
+	GAME_DESTROYED += 1
     }
 
     this.spawn = function(){
-	this.state = STATE_LIFE;		
+	this.state = STATE_LIFE;
+	GAME_CREATED += 1;
     }
 }
 
@@ -81,12 +88,12 @@ function Point(x,y){
     this.y = y;
 }
 
-function grid(width, height){
+function grid(x, y, width, height){
     // todo: parameter x,y
-    X = 100;
-    Y = 100;
-    TILE_SIZE = 29;
-    BORDER=1;
+    X = x;
+    Y = y;
+    TILE_SIZE = BLOCK_SIZE - BORDER_SIZE;
+    BORDER=BORDER_SIZE;
     
     playerPoint = new Point(-1,-1);
     playerIn = false;
@@ -113,6 +120,16 @@ function grid(width, height){
 	playerPoint.y = y;
     }
 
+    this.moveLife = function() {
+	for ( var i = 0; i < height; i++){
+	    for ( var j = 0; j < width; j++) {
+		if (this.gridArray[i][j].state == STATE_LIFE){
+		    this.move(i, j);
+		}
+	    }
+	}
+
+    }
 
     this.getNeighbours = function(x,y) {
 	var listOfPoints = [];
@@ -133,7 +150,6 @@ function grid(width, height){
 	}
 	return listOfPoints;
     }
-
 
     this.getEmptyPoint = function(x,y) {
 	var point = new Point(-1,-1);
@@ -168,20 +184,22 @@ function grid(width, height){
 	    if (neighbours.length > 3 || neighbours.length < 2){
 		console.log("Killed " + i + " " + j);
 		this.gridArray[i][j].die();
-	    } else {
+	    } else { //if (neighbours.length == 3) {
 	    	var emptyPoint = this.getEmptyPoint(i,j);
 		if (emptyPoint.x == -1){
 		    console.log("No space!!!");
 		} else {
 		    if (this.gridArray[emptyPoint.x][emptyPoint.y].state == STATE_EXIT) {
 			this.gridArray[i][j].die();
-
+			GAME_DESTROYED -= 1; // Compensate for die
+			GAME_FREED += 1;
+			
 			var cx = this.gridArray[emptyPoint.x][emptyPoint.y].x;
 			var cy = this.gridArray[emptyPoint.x][emptyPoint.y].y;
 			
 			var escaped = null;
 			console.log("Escaped! at: x:" + cx + " : " + cy ) ;
-			escaped = new freetile(BLOCK_SIZE, BLOCK_SIZE, "pink", cx, cy);
+			escaped = new freetile(BLOCK_SIZE, BLOCK_SIZE, "white", cx, cy);
 			if (emptyPoint.x < width/2) {	    
 			    escaped.speedX = -10;			    
 			}
@@ -283,7 +301,7 @@ function grid(width, height){
 	      this.gridArray[playerPoint.x-1][playerPoint.y].state != STATE_EMPTY &&
 	      this.gridArray[playerPoint.x][playerPoint.y+1].state != STATE_EMPTY &&
 	      this.gridArray[playerPoint.x][playerPoint.y-1].state != STATE_EMPTY ) ) {
-	    alert("YOU LOSE. GO HOME.");
+	    GAME_COLOUR="red";
 	}
     }
 
@@ -337,5 +355,3 @@ function freetile(width, height, color, x, y) {
 	}
     };
 }
-
-
